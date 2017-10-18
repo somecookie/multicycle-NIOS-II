@@ -17,7 +17,7 @@ entity PC is
 end PC;
 
 architecture synth of PC is
-signal counter: std_logic_vector(13 downto 0) := (others => '0');
+signal counter: std_logic_vector(15 downto 0) := (others => '0');
 begin
 
 p_counter: process(clk, reset_n, en, sel_a, sel_imm, add_imm, imm, a)
@@ -26,13 +26,21 @@ begin
 		counter <= (others => '0');
 	elsif(rising_edge(clk)) then
 			if(en = '1') then
-				counter <= std_logic_vector(unsigned(counter) + 1);
-				
+				if(add_imm = '1') then
+					counter <= std_logic_vector(unsigned(counter) + unsigned(imm));
+				elsif(sel_imm = '1') then
+					counter <= std_logic_vector(unsigned(imm(13 downto 0)&"00"));
+				elsif(sel_a = '1') then
+					counter <= a;
+				else
+					counter <= std_logic_vector(unsigned(counter) + 4);
+				end if;
 			end if;
 	end if;
 			
 end process;
 
-addr <= (15 downto 0 => '0') & counter & "00";
+addr <= (15 downto 0 => '0') & counter;
+--addr <= (15 downto 0 => '0') & counter & "00";
 
 end synth;

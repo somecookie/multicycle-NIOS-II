@@ -38,7 +38,7 @@ end controller;
 
 architecture synth of controller is
 
-type op_state is (FETCH1, FETCH2, DECODE, R_OP, STORE, BREAK, LOAD1, LOAD2, I_OP, BRANCH, CALL, JMP);
+type op_state is (FETCH1, FETCH2, DECODE, R_OP, STORE, BREAK, LOAD1, LOAD2, I_OP, BRANCH, CALL, JMP, I_OP_UN, SHIFT_5);
 signal state, next_state : op_state;
 
 begin
@@ -82,6 +82,7 @@ begin
 					if("00"&opx = X"34") then
 						 next_state <= BREAK;
 						elsif(("00"&opx = X"05") or ("00"&opx = X"0D")) then next_state <= JMP;
+						elsif(("00"&opx = X"12") or ("00"&opx = X"1A") or ("00"&opx = X"3A")) then next_state <= SHIFT_5;
 						else next_state <= R_OP;
 					end if;
 			       elsif("00"&op = X"04") then next_state <= I_OP;
@@ -89,10 +90,14 @@ begin
 			       elsif("00"&op = X"15") then next_state <= STORE;
 			       elsif(("00"&op = X"06") or ("00"&op = X"0E") or ("00"&op = X"16") or ("00"&op = X"1E") or ("00"&op = X"26") or ("00"&op = X"2E") or ("00"&op = X"36")) then next_state <= BRANCH;
 			       elsif("00"&op = X"00") then next_state <= CALL;	
+			       elsif(("00"&op = X"0C") or ("00"&op = X"14") or ("00"&op = X"1C")) then next_state <= I_OP_UN;
+
 			end if;
 		when I_OP => next_state <= FETCH1;
 				rf_wren <= '1';
 				imm_signed <= '1';
+		when I_OP_UN => next_state <= FETCH1;
+				rf_wren <= '1';
 		when STORE => next_state <= FETCH1;
 				sel_addr <= '1';
 				-- Pas besoin sel_b
@@ -125,7 +130,10 @@ begin
 		when JMP => next_state <= FETCH1;
 			    pc_en <= '1';
 			    pc_sel_a <= '1';
-
+		when SHIFT_5 => next_state <= FETCH1;
+				rf_wren <= '1';
+				--sel_b <= '1';
+				sel_rc <= '1';
 	end case;
 end process;
 
@@ -134,8 +142,11 @@ begin
 	if("00"&op = X"3A") then
 		op_alu(2 downto 0) <= opx(5 downto 3);
 		case "00"&opx is 
-			when X"0E" => op_alu(5 downto 3) <= "10-";
-			when X"1B" => op_alu(5 downto 3) <= "11-";
+			when X"31" => op_alu(5 downto 3) <= "000";
+			when X"39" => op_alu(5 downto 3) <= "001";
+			when X"08" | X"10" => op_alu(5 downto 3) <= "011";
+			when X"06" | X"0E" | X"16" | X"1E" => op_alu(5 downto 3) <= "10-";
+			when X"13" | X"1B" | X"3B" | X"12" | X"1A" | X"3A"=> op_alu(5 downto 3) <= "11-";
 			when others => op_alu(5 downto 3) <= "---";
 		end case;
 	else
@@ -144,6 +155,7 @@ begin
 			when X"04" | X"17" | X"15" => op_alu(5 downto 3) <= "000";
 			when X"06" => op_alu <= "011100";
 			when X"0E" | X"16" | X"1E" | X"26" | X"2E" | X"36" => op_alu(5 downto 3) <= "011";
+			when X"0C" | X"14" | X"1C" => op_alu(5 downto 3) <= "10-";
 			when others => op_alu(5 downto 3) <= "---";
 		end case;
 	end if;
