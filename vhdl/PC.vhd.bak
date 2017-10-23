@@ -40,7 +40,7 @@ begin
 			
 end process;
 
-addr <= (15 downto 0 => '0') & counter;
+addr <= (15 downto 0 => '0') & counter(15 downto 2) & "00";
 --addr <= (15 downto 0 => '0') & counter & "00";
 
 end synth;
