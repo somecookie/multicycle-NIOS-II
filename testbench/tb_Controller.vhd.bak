@@ -359,17 +359,17 @@ begin
                         success := bcheck(pc_en, '1', "pc_en", filename, counter, currenttime, " During CALL, pc_en has to be 1.") and success;
                         success := bcheck(sel_pc, '1', "sel_pc", filename, counter, currenttime, " During CALL, sel_pc has to be 1.") and success;
                         success := bcheck(sel_ra, '1', "sel_ra", filename, counter, currenttime, " During CALL, sel_ra has to be 1.") and success;
-                     when CALLR =>
-                        success := bcheck(write, '0', "write", filename, counter, currenttime, " During CALLR, write has to be 0.") and success;
-                        success := bcheck(ir_en, '0', "ir_en", filename, counter, currenttime, " During CALLR, ir_en has to be 0.") and success;
-                        success := bcheck(pc_add_imm, '0', "pc_add_imm", filename, counter, currenttime, " During CALLR, pc_add_imm has to be 0.") and success;
-                        success := bcheck(pc_sel_imm, '0', "pc_sel_imm", filename, counter, currenttime, " During CALLR, pc_sel_imm has to be 0.") and success;
+                  --   when CALLR =>
+                  --      success := bcheck(write, '0', "write", filename, counter, currenttime, " During CALLR, write has to be 0.") and success;
+                  --      success := bcheck(ir_en, '0', "ir_en", filename, counter, currenttime, " During CALLR, ir_en has to be 0.") and success;
+                  --      success := bcheck(pc_add_imm, '0', "pc_add_imm", filename, counter, currenttime, " During CALLR, pc_add_imm has to be 0.") and success;
+                  --      success := bcheck(pc_sel_imm, '0', "pc_sel_imm", filename, counter, currenttime, " During CALLR, pc_sel_imm has to be 0.") and success;
 
-                        success := bcheck(pc_sel_a, '1', "pc_sel_a", filename, counter, currenttime, " During CALLR, pc_sel_a has to be 1.") and success;
-                        success := bcheck(rf_wren, '1', "rf_wren", filename, counter, currenttime, " During CALLR, rf_wren has to be 1.") and success;
-                        success := bcheck(pc_en, '1', "pc_en", filename, counter, currenttime, " During CALLR, pc_en has to be 1.") and success;
-                        success := bcheck(sel_pc, '1', "sel_pc", filename, counter, currenttime, " During CALLR, sel_pc has to be 1.") and success;
-                        success := bcheck(sel_rC or sel_ra, '1', "sel_rC", filename, counter, currenttime, " During CALLR, sel_rC or sel_ra has to be 1.") and success;
+                  --      success := bcheck(pc_sel_a, '1', "pc_sel_a", filename, counter, currenttime, " During CALLR, pc_sel_a has to be 1.") and success;
+                  --      success := bcheck(rf_wren, '1', "rf_wren", filename, counter, currenttime, " During CALLR, rf_wren has to be 1.") and success;
+                  --      success := bcheck(pc_en, '1', "pc_en", filename, counter, currenttime, " During CALLR, pc_en has to be 1.") and success;
+                   --     success := bcheck(sel_pc, '1', "sel_pc", filename, counter, currenttime, " During CALLR, sel_pc has to be 1.") and success;
+                   --     success := bcheck(sel_rC or sel_ra, '1', "sel_rC", filename, counter, currenttime, " During CALLR, sel_rC or sel_ra has to be 1.") and success;
                     when JMP =>
                         success := bcheck(write, '0', "write", filename, counter, currenttime, " During JMP, write has to be 0.") and success;
                         success := bcheck(ir_en, '0', "ir_en", filename, counter, currenttime, " During JMP, ir_en has to be 0.") and success;

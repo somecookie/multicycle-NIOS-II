@@ -38,7 +38,7 @@ end controller;
 
 architecture synth of controller is
 
-type op_state is (FETCH1, FETCH2, DECODE, R_OP, STORE, BREAK, LOAD1, LOAD2, I_OP, BRANCH, CALL, JMP, I_OP_UN, SHIFT_5);
+type op_state is (FETCH1, FETCH2, DECODE, R_OP, STORE, BREAK, LOAD1, LOAD2, I_OP, BRANCH, CALL, JMP, I_OP_UN, RI_OP);
 signal state, next_state : op_state;
 
 begin
@@ -82,7 +82,7 @@ begin
 					if("00"&opx = X"34") then
 						 next_state <= BREAK;
 						elsif(("00"&opx = X"05") or ("00"&opx = X"0D")) then next_state <= JMP;
-						elsif(("00"&opx = X"12") or ("00"&opx = X"1A") or ("00"&opx = X"3A")) then next_state <= SHIFT_5;
+						elsif(("00"&opx = X"12") or ("00"&opx = X"1A") or ("00"&opx = X"3A")) then next_state <= RI_OP;
 						else next_state <= R_OP;
 					end if;
 			       elsif("00"&op = X"04") then next_state <= I_OP;
@@ -122,17 +122,20 @@ begin
 				branch_op <= '1';
 				pc_add_imm <= '1';
 		when CALL => next_state <= FETCH1;
-			     sel_ra <= '1';
+			     pc_en <='1';
+			     pc_sel_imm <= '1';
+			     
 			     -- sel_rc reste a 0
 			     --sel_mem reste a 0
+			     sel_ra <= '1';
 			     sel_pc <= '1';
 			     rf_wren <= '1';
 		when JMP => next_state <= FETCH1;
 			    pc_en <= '1';
 			    pc_sel_a <= '1';
-		when SHIFT_5 => next_state <= FETCH1;
+		when RI_OP => next_state <= FETCH1;
 				rf_wren <= '1';
-				sel_b <= '1';
+				--sel_b <= '1';
 				sel_rc <= '1';
 	end case;
 end process;
